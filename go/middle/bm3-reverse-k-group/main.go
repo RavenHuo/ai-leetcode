@@ -1,0 +1,80 @@
+package main
+
+/*
+题目：链表中的节点每 k 个一组翻转
+牛客网题目标识：BM3
+难度：中等
+题目链接：https://www.nowcoder.com/practice/b49c3dc907814e9bbfa8437c251b028e
+
+描述：
+将给出的链表中的节点每 k 个一组翻转，返回翻转后的链表。
+如果链表中的节点数不是 k 的倍数，将最后剩下的节点保持原样。
+你不能更改节点中的值，只能更改节点本身。
+
+数据范围：
+0 <= n <= 2000，1 <= k <= 2000，链表中每个元素都满足 0 <= val <= 1000。
+要求空间复杂度 O(1)，时间复杂度 O(n)。
+
+示例 1：
+给定的链表是 1 -> 2 -> 3 -> 4 -> 5。
+对于 k = 2，你应该返回 2 -> 1 -> 4 -> 3 -> 5。
+
+示例 2：
+给定的链表是 1 -> 2 -> 3 -> 4 -> 5。
+对于 k = 3，你应该返回 3 -> 2 -> 1 -> 4 -> 5。
+
+示例 3：
+给定的链表为空，k = 1 时返回空链表。
+
+解题提示：
+可以使用哨兵节点，并先检查剩余链表是否至少包含 k 个节点；确认足够后，再用三个指针原地翻转这一组节点。
+*/
+
+type ListNode struct {
+	Val  int
+	Next *ListNode
+}
+
+func reverseKGroup(head *ListNode, k int) *ListNode {
+	var res, resEnd *ListNode
+	pre := head
+	i := 1
+	for head != nil {
+		if i == k {
+			next := head.Next
+
+			reverse := reverseGroup(pre, head.Next)
+			if res == nil {
+				res = reverse
+			} else {
+				resEnd.Next = reverse
+			}
+			for reverse != nil {
+				resEnd = reverse
+				reverse = reverse.Next
+			}
+			head = next
+			pre = next
+			i = 1
+		} else {
+			i += 1
+			head = head.Next
+		}
+	}
+	if resEnd != nil {
+		resEnd.Next = pre
+	}
+	return res
+}
+
+func reverseGroup(head *ListNode, end *ListNode) *ListNode {
+	var pre *ListNode
+	for head != nil && end != head {
+
+		next := head.Next
+		head.Next = pre
+		pre = head
+		head = next
+	}
+	return pre
+}
